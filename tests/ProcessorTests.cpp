@@ -47,6 +47,6 @@ int main()
             finite = finite && std::isfinite(audio.getSample(channel, sample));
     expect(finite, "processor produces finite silence");
 
-    if (failures == 0) std::cout << "All G3X Louder processor tests passed\n";
+    if (failures == 0) std::cout << "All G3X One Louder processor tests passed\n";
     return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

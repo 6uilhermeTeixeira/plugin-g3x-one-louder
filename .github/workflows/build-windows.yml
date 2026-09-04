@@ -25,18 +25,18 @@ jobs:
       - name: Generate SHA-256
         shell: pwsh
         run: |
-          $bundle = "build/windows/G3XLouder_artefacts/Release/VST3/G3X Louder.vst3"
-          if (-not (Test-Path $bundle)) { throw "G3X Louder VST3 not found" }
+          $bundle = "build/windows/G3XOneLouder_artefacts/Release/VST3/G3X One Louder.vst3"
+          if (-not (Test-Path $bundle)) { throw "G3X One Louder VST3 not found" }
           $binary = Get-ChildItem $bundle -Recurse -File | Where-Object Extension -eq ".vst3" | Select-Object -First 1
           if ($null -eq $binary) { $binary = Get-ChildItem $bundle -Recurse -File | Select-Object -First 1 }
           $hash = (Get-FileHash $binary.FullName -Algorithm SHA256).Hash.ToLower()
-          "$hash  $($binary.Name)" | Set-Content "build/windows/G3XLouder_artefacts/Release/SHA256SUMS.txt"
+          "$hash  $($binary.Name)" | Set-Content "build/windows/G3XOneLouder_artefacts/Release/SHA256SUMS.txt"
       - name: Upload VST3
         uses: actions/upload-artifact@v4
         with:
-          name: G3X-Louder-Windows-x64-${{ github.sha }}
+          name: G3X-One-Louder-Windows-x64-${{ github.sha }}
           path: |
-            build/windows/G3XLouder_artefacts/Release/VST3/G3X Louder.vst3
-            build/windows/G3XLouder_artefacts/Release/SHA256SUMS.txt
+            build/windows/G3XOneLouder_artefacts/Release/VST3/G3X One Louder.vst3
+            build/windows/G3XOneLouder_artefacts/Release/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 30

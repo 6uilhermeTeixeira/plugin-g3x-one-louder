@@ -1,4 +1,4 @@
-# G3X Louder
+# G3X One Louder
 
 Maximizador de loudness com um macrocontrole, em desenvolvimento com C++20,
 JUCE e CMake. A entrega inicial será VST3 64-bit para Windows e Standalone.
@@ -26,3 +26,7 @@ ctest --preset debug
 ![Referência Waves OneKnob Louder](docs/references/waves-oneknob-louder-interface.png)
 
 O produto terá algoritmo, identidade, interface, textos e presets originais.
+
+## Licença
+
+Distribuído sob a [licença MIT](LICENSE).

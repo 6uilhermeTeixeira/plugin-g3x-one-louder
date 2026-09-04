@@ -1,4 +1,4 @@
-# G3X Louder — Product Requirements Document
+# G3X One Louder — Product Requirements Document
 
 **Versão:** 0.1.0  
 **Status:** proposta para confirmação  
@@ -7,7 +7,7 @@
 
 ## 1. Visão
 
-G3X Louder aumenta volume percebido com um macrocontrole, combinando compressão
+G3X One Louder aumenta volume percebido com um macrocontrole, combinando compressão
 de baixo nível, makeup e proteção de picos. Deve fortalecer tracks, buses e
 mixes sem exigir configuração manual de threshold, ratio e ceiling.
 
@@ -109,7 +109,7 @@ Hipóteses G3X iniciais:
 
 ## 11. Decisões para confirmação
 
-- Nome `G3X Louder`; ganho máximo de +18 ou +24 dB.
+- Nome `G3X One Louder`; ganho máximo de +18 ou +24 dB.
 - Expor Safe/Hot ou fixar ceiling seguro.
 - Priorizar zero latência ou true-peak com lookahead.
 - Interface com medidores ou literalmente apenas um knob.

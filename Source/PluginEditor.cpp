@@ -107,7 +107,7 @@ void LouderAudioProcessorEditor::paint(juce::Graphics& g)
     g.setColour(C::text); g.setFont(juce::FontOptions(25.0f, juce::Font::bold));
     g.drawText("G3X", header.reduced(22, 8).removeFromLeft(68), juce::Justification::centredLeft);
     g.setColour(C::amber); g.setFont(juce::FontOptions(17.0f));
-    g.drawText("LOUDER", header.reduced(88, 8), juce::Justification::centredLeft);
+    g.drawText("ONE LOUDER", header.reduced(88, 8), juce::Justification::centredLeft);
 }
 
 void LouderAudioProcessorEditor::resized()

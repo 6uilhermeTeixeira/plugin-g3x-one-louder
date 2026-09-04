@@ -114,6 +114,6 @@ int main()
     }
 
     if (failures == 0)
-        std::cout << "All G3X Louder M1 tests passed\n";
+        std::cout << "All G3X One Louder M1 tests passed\n";
     return failures == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
