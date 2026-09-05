@@ -32,17 +32,22 @@ void LouderLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int w,
     const juce::Point<float> centre { static_cast<float>(x + w / 2), static_cast<float>(y + h / 2) };
     const auto circle = juce::Rectangle<float>(2.0f * r, 2.0f * r).withCentre(centre);
     g.setColour(C::bg); g.fillEllipse(circle); g.setColour(C::edge); g.drawEllipse(circle, 2.0f);
+    juce::Path backgroundArc;
+    backgroundArc.addCentredArc(centre.x, centre.y, r + 7.0f, r + 7.0f, 0.0f, start, end, true);
+    g.setColour(C::edge.withAlpha(0.6f));
+    g.strokePath(backgroundArc, juce::PathStrokeType(8.0f, juce::PathStrokeType::curved,
+                                                     juce::PathStrokeType::rounded));
     const auto angle = start + p * (end - start);
     juce::Path arc;
     arc.addCentredArc(centre.x, centre.y, r + 7.0f, r + 7.0f, 0.0f, start, angle, true);
     g.setGradientFill({ C::green, circle.getX(), circle.getBottom(), C::amber,
                         circle.getRight(), circle.getY(), false });
-    g.strokePath(arc, juce::PathStrokeType(9.0f, juce::PathStrokeType::curved,
+    g.strokePath(arc, juce::PathStrokeType(8.0f, juce::PathStrokeType::curved,
                                            juce::PathStrokeType::rounded));
-    juce::Path pointer; pointer.addRoundedRectangle(-3.0f, -r + 18.0f, 6.0f, r * 0.5f, 3.0f);
+    juce::Path pointer; pointer.addRoundedRectangle(-3.0f, -r + 19.0f, 6.0f, r * 0.48f, 3.0f);
     g.setColour(C::amber); g.fillPath(pointer,
         juce::AffineTransform::rotation(angle).translated(centre.x, centre.y));
-    if (slider.hasKeyboardFocus(false)) { g.setColour(C::text); g.drawEllipse(circle.expanded(15.0f), 1.5f); }
+    if (slider.hasKeyboardFocus(false)) { g.setColour(C::text); g.drawRoundedRectangle(circle.expanded(16.0f), 20.0f, 1.5f); }
 }
 
 void LouderLookAndFeel::drawToggleButton(juce::Graphics& g, juce::ToggleButton& b, bool over, bool)
@@ -77,7 +82,8 @@ void Meter::paint(juce::Graphics& g)
 LouderAudioProcessorEditor::LouderAudioProcessorEditor(LouderAudioProcessor& owner)
     : AudioProcessorEditor(owner), processor(owner)
 {
-    setLookAndFeel(&lookAndFeel); setResizable(true, true); setResizeLimits(480, 440, 820, 760); setSize(560, 560);
+    setLookAndFeel(&lookAndFeel); setResizable(true, true); setResizeLimits(420, 454, 760, 821);
+    getConstrainer()->setFixedAspectRatio(500.0 / 540.0); setSize(500, 540);
     amountSlider.setSliderStyle(juce::Slider::RotaryHorizontalVerticalDrag);
     amountSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 100, 29);
     amountSlider.setDoubleClickReturnValue(true, 0.0); amountSlider.setTitle("Louder amount");
@@ -102,24 +108,36 @@ LouderAudioProcessorEditor::~LouderAudioProcessorEditor() { stopTimer(); setLook
 
 void LouderAudioProcessorEditor::paint(juce::Graphics& g)
 {
-    g.setGradientFill({ C::panel.brighter(0.06f), 0.0f, 0.0f, C::bg, 0.0f, static_cast<float>(getHeight()), false }); g.fillAll();
+    const auto area = getLocalBounds().toFloat();
+    g.setGradientFill({ C::panel.brighter(0.06f), 0.0f, 0.0f, C::bg, 0.0f, area.getBottom(), false }); g.fillAll();
     auto header = getLocalBounds().removeFromTop(78); g.setColour(C::green); g.fillRect(header.removeFromBottom(2));
     g.setColour(C::text); g.setFont(juce::FontOptions(25.0f, juce::Font::bold));
     g.drawText("G3X", header.reduced(22, 8).removeFromLeft(68), juce::Justification::centredLeft);
     g.setColour(C::amber); g.setFont(juce::FontOptions(17.0f));
-    g.drawText("ONE LOUDER", header.reduced(88, 8), juce::Justification::centredLeft);
+    g.drawFittedText("ONE LOUDER", { 88, 8, 96, 60 }, juce::Justification::centredLeft,
+                     1, 0.65f);
+    const auto panelBounds = juce::Rectangle<float>(20.0f, 92.0f, area.getWidth() - 40.0f,
+                                                     area.getHeight() - 126.0f);
+    g.setColour(C::panel); g.fillRoundedRectangle(panelBounds, 18.0f);
+    g.setColour(C::green.withAlpha(0.18f)); g.drawRoundedRectangle(panelBounds, 18.0f, 1.0f);
+    g.setColour(C::muted); g.setFont(juce::FontOptions(9.0f));
+    g.drawText("LIFT  /  DENSITY  /  LEVEL", getLocalBounds().removeFromBottom(24),
+               juce::Justification::centred);
 }
 
 void LouderAudioProcessorEditor::resized()
 {
-    auto header = getLocalBounds().removeFromTop(78).reduced(16, 17); bypassButton.setBounds(header.removeFromRight(78));
-    header.removeFromRight(8); presetBox.setBounds(header.removeFromRight(std::min(220, header.getWidth())));
-    auto body = getLocalBounds().withTrimmedTop(92).withTrimmedBottom(18).reduced(20, 0);
-    auto footer = body.removeFromBottom(48); ceilingBox.setBounds(footer.removeFromLeft(150).reduced(4, 7));
-    latencyLabel.setBounds(footer.reduced(5, 7)); auto meters = body.removeFromRight(150).reduced(4, 10);
+    auto header = getLocalBounds().removeFromTop(78).reduced(18, 17); bypassButton.setBounds(header.removeFromRight(80));
+    header.removeFromRight(8); presetBox.setBounds(header.removeFromRight(210));
+    auto body = getLocalBounds().withTrimmedTop(104).withTrimmedBottom(46).reduced(32, 0);
+    auto meters = body.removeFromBottom(58).reduced(3, 2);
     const auto width = meters.getWidth() / 4; inputMeter.setBounds(meters.removeFromLeft(width));
     upwardMeter.setBounds(meters.removeFromLeft(width)); limiterMeter.setBounds(meters.removeFromLeft(width));
-    outputMeter.setBounds(meters); amountSlider.setBounds(body.reduced(6, 2));
+    outputMeter.setBounds(meters);
+    auto accessory = body.removeFromBottom(44);
+    ceilingBox.setBounds(accessory.removeFromLeft(150).reduced(3, 7));
+    latencyLabel.setBounds(accessory.reduced(8, 7));
+    amountSlider.setBounds(body.reduced(62, 0));
 }
 
 void LouderAudioProcessorEditor::timerCallback()
